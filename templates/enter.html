@@ -1,0 +1,352 @@
+{% extends "base/auth_base.html" %}
+{% load static %}
+
+{% block title %}STEMind - Đăng nhập{% endblock %}
+
+{% block content %}
+<!-- Auth Brand -->
+<div class="auth-brand">
+    <h1>
+        <a href="{% url 'home' %}">STEMind</a>
+    </h1>
+    <p class="subtitle">Chào mừng trở lại! Đăng nhập để tiếp tục</p>
+</div>
+
+<!-- Login Form -->
+<form method="post" id="loginForm" novalidate>
+    {% csrf_token %}
+    
+    <!-- Error Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <!-- Username Field -->
+    <div class="form-floating">
+        <input type="text" 
+               class="form-control" 
+               id="username" 
+               name="username" 
+               placeholder="Tên đăng nhập"
+               required
+               autocomplete="username">
+        <label for="username">
+            <i class="fas fa-user me-2"></i>Tên đăng nhập
+        </label>
+        <div class="invalid-feedback">
+            Vui lòng nhập tên đăng nhập
+        </div>
+    </div>
+    
+    <!-- Password Field -->
+    <div class="form-floating">
+        <input type="password" 
+               class="form-control" 
+               id="password" 
+               name="password" 
+               placeholder="Mật khẩu"
+               required
+               autocomplete="current-password">
+        <label for="password">
+            <i class="fas fa-lock me-2"></i>Mật khẩu
+        </label>
+        <div class="password-toggle">
+            <button type="button" class="btn-password-toggle" onclick="togglePassword('password')">
+                <i class="fas fa-eye" id="passwordToggleIcon"></i>
+            </button>
+        </div>
+        <div class="invalid-feedback">
+            Vui lòng nhập mật khẩu
+        </div>
+    </div>
+    
+    <!-- Remember Me & Forgot Password -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="remember-me" id="rememberMe">
+            <label class="form-check-label" for="rememberMe">
+                Nhớ tôi
+            </label>
+        </div>
+        <a href="#" class="forgot-password-link">Quên mật khẩu?</a>
+    </div>
+    
+    <!-- Login Button -->
+    <button class="btn btn-primary w-100 mb-3" type="submit">
+        <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+    </button>
+</form>
+
+<!-- Social Login Divider -->
+<div class="social-divider">
+    <span>hoặc đăng nhập với</span>
+</div>
+
+<!-- Social Login Buttons -->
+<div class="social-login">
+    <button class="btn btn-social" onclick="socialLogin('google')">
+        <i class="fab fa-google" style="color: #db4437;"></i>
+        <span>Đăng nhập với Google</span>
+    </button>
+    
+    <button class="btn btn-social" onclick="socialLogin('facebook')">
+        <i class="fab fa-facebook-f" style="color: #4267B2;"></i>
+        <span>Đăng nhập với Facebook</span>
+    </button>
+</div>
+
+<!-- Register Link -->
+<div class="text-center mt-4">
+    <p class="mb-0">
+        Chưa có tài khoản? 
+        <a href="{% url 'register' %}" class="fw-semibold">Đăng ký ngay</a>
+    </p>
+</div>
+
+<!-- Footer -->
+<div class="auth-footer">
+    <p class="mb-0">&copy; 2025 STEMind. Tất cả quyền được bảo lưu.</p>
+</div>
+
+<style>
+/* Login Page Specific Styles */
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.btn-password-toggle {
+    background: none;
+    border: none;
+    color: #6c757d;
+    padding: 0.25rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-password-toggle:hover {
+    color: #667eea;
+}
+
+.forgot-password-link {
+    font-size: 0.9rem;
+    color: #667eea;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.forgot-password-link:hover {
+    color: #5a67d8;
+    text-decoration: underline;
+}
+
+/* Form validation styles */
+.form-control.is-valid {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.15);
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+}
+
+.invalid-feedback {
+    display: none;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #dc3545;
+}
+
+.form-control.is-invalid ~ .invalid-feedback {
+    display: block;
+}
+
+/* Loading state */
+.btn-loading span {
+    opacity: 0;
+}
+
+/* Social login hover effects */
+.btn-social:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced form floating labels */
+.form-floating > label i {
+    opacity: 0.7;
+}
+
+.form-floating.focused > label i,
+.form-floating:focus-within > label i {
+    opacity: 1;
+    color: #667eea;
+}
+
+/* Animation for form elements */
+.form-floating {
+    animation: slideInUp 0.4s ease-out backwards;
+}
+
+.form-floating:nth-child(2) { animation-delay: 0.1s; }
+.form-floating:nth-child(3) { animation-delay: 0.2s; }
+.form-floating:nth-child(4) { animation-delay: 0.3s; }
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 576px) {
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('loginForm');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
+    // Enhanced form validation
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('username');
+        const password = document.getElementById('password');
+        let isValid = true;
+        
+        // Reset validation
+        [username, password].forEach(input => {
+            input.classList.remove('is-valid', 'is-invalid');
+        });
+        
+        // Validate username
+        if (!username.value.trim()) {
+            username.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            username.classList.add('is-valid');
+        }
+        
+        // Validate password
+        if (!password.value) {
+            password.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            password.classList.add('is-valid');
+        }
+        
+        if (isValid) {
+            // Show loading state
+            submitBtn.classList.add('btn-loading');
+            submitBtn.innerHTML = '<span><i class="fas fa-sign-in-alt me-2"></i>Đăng nhập</span>';
+            
+            // Submit form after short delay for UX
+            setTimeout(() => {
+                form.submit();
+            }, 500);
+        } else {
+            // Shake animation for invalid form
+            form.style.animation = 'shake 0.5s ease-in-out';
+            setTimeout(() => {
+                form.style.animation = '';
+            }, 500);
+        }
+    });
+    
+    // Real-time validation
+    const inputs = form.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim()) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            }
+        });
+        
+        input.addEventListener('input', function() {
+            if (this.classList.contains('is-invalid') && this.value.trim()) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            }
+        });
+    });
+    
+    // Remember me functionality
+    const rememberMe = document.getElementById('rememberMe');
+    const username = document.getElementById('username');
+    
+    // Load saved username
+    if (localStorage.getItem('remembered_username')) {
+        username.value = localStorage.getItem('remembered_username');
+        rememberMe.checked = true;
+    }
+    
+    // Save username on form submit
+    form.addEventListener('submit', function() {
+        if (rememberMe.checked) {
+            localStorage.setItem('remembered_username', username.value);
+        } else {
+            localStorage.removeItem('remembered_username');
+        }
+    });
+});
+
+// Password visibility toggle
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(inputId + 'ToggleIcon');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+// Social login placeholder functions
+function socialLogin(provider) {
+    // Placeholder for social login implementation
+    alert(`Đăng nhập với ${provider} sẽ được triển khai sớm!`);
+}
+
+// Shake animation CSS
+const shakeCSS = `
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+`;
+
+// Add shake animation to page
+const style = document.createElement('style');
+style.textContent = shakeCSS;
+document.head.appendChild(style);
+</script>
+{% endblock content %}
+

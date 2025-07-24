@@ -1,0 +1,513 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block extra_css %}
+<link href="{% static 'Style/base.css' %}" rel="stylesheet">
+<style>
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 4rem 0;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.hero-stat {
+    text-align: center;
+}
+
+.hero-stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    display: block;
+}
+
+.hero-stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Featured Files Section */
+.featured-section {
+    padding: 4rem 0;
+    background: #f8f9fa;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.featured-scroll-container {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #667eea #f1f1f1;
+    padding-bottom: 1rem;
+    position: relative;
+}
+
+.featured-scroll-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 100%;
+    background: linear-gradient(to right, transparent, #f8f9fa);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.featured-scroll-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.featured-scroll-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.featured-scroll-container::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 4px;
+}
+
+.featured-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #5a67d8;
+}
+
+.featured-grid {
+    display: flex;
+    gap: 2rem;
+    padding: 0.5rem;
+    min-width: fit-content;
+}
+
+.featured-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    height: 100%;
+    flex-shrink: 0;
+    width: 350px;
+}
+
+.featured-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 64px rgba(0,0,0,0.15);
+}
+
+.featured-card-image {
+    height: 220px;
+    background: linear-gradient(45deg, #f0f2f5, #e9ecef);
+    position: relative;
+    overflow: hidden;
+}
+
+.featured-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.featured-card:hover .featured-card-image img {
+    transform: scale(1.1);
+}
+
+.featured-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.featured-card:hover .featured-card-overlay {
+    opacity: 1;
+}
+
+.featured-card-content {
+    padding: 1.5rem;
+}
+
+.featured-card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+}
+
+.featured-card-description {
+    color: #6c757d;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.featured-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.featured-card-author {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.featured-card-date {
+    color: #adb5bd;
+    font-size: 0.8rem;
+}
+
+/* Recent Files Section */
+.recent-section {
+    padding: 4rem 0;
+    background: white;
+}
+
+.recent-item {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.recent-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    border-color: #667eea;
+}
+
+.recent-item-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #f8f9fa;
+}
+
+.recent-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.recent-item-content {
+    flex-grow: 1;
+}
+
+.recent-item-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+
+.recent-item-date {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Sidebar */
+.sidebar-section {
+    padding: 4rem 0;
+    background: #f8f9fa;
+}
+
+.sidebar-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.sidebar-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.contributor-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.contributor-item:last-child {
+    border-bottom: none;
+}
+
+.contributor-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+}
+
+.contributor-name {
+    color: #2c3e50;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.contributor-name:hover {
+    color: #667eea;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .featured-card {
+        width: 300px;
+    }
+    
+    .featured-grid {
+        gap: 1rem;
+    }
+    
+    .recent-item {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .featured-card {
+        width: 280px;
+    }
+    
+    .featured-scroll-container::after {
+        width: 30px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content text-center">
+            <h1 class="hero-title">STEMind</h1>
+            <p class="hero-subtitle">Nền tảng chia sẻ tài liệu giáo dục STEM hàng đầu Việt Nam</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-number">{{ featured_files|length }}+</span>
+                    <span class="hero-stat-label">Tài liệu chất lượng</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">{{ top_users|length }}+</span>
+                    <span class="hero-stat-label">Giáo viên tham gia</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">{{ categories|length }}+</span>
+                    <span class="hero-stat-label">Chuyên mục</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Files Section -->
+<section class="featured-section">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h2 class="section-title mb-0">Tài liệu nổi bật</h2>
+            <small class="text-muted">
+                <i class="fas fa-arrow-right me-1"></i>Kéo để xem thêm
+            </small>
+        </div>
+        <div class="featured-scroll-container">
+            <div class="featured-grid">
+                {% for file in featured_files %}
+                <article class="featured-card">
+                    <a href="{% url 'file_detail' file.title %}" class="text-decoration-none">
+                        <div class="featured-card-image">
+                            {% if file.file_thumbnail %}
+                                <img src="{{ file.file_thumbnail.url }}" alt="{{ file.title }}">
+                            {% else %}
+                                <div class="d-flex align-items-center justify-content-center h-100">
+                                    <i class="fas fa-file-alt fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                            <div class="featured-card-overlay"></div>
+                        </div>
+                        <div class="featured-card-content">
+                            <h3 class="featured-card-title">{{ file.title }}</h3>
+                            <p class="featured-card-description">{{ file.file_description|linebreaksbr }}</p>
+                            <div class="featured-card-footer">
+                                <div class="featured-card-author">
+                                    <i class="fas fa-user"></i>
+                                    <span>{{ file.author.username }}</span>
+                                </div>
+                                <div class="featured-card-date">{{ file.created_at|timesince }} trước</div>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Files & Sidebar Section -->
+<section class="recent-section">
+    <div class="container">
+        <div class="row g-4">
+                         <div class="col-lg-8">
+                 <h2 class="section-title text-start">Tài liệu mới nhất</h2>
+                 {% for file in recently_files %}
+                 <article class="recent-item">
+                     <a href="{% url 'file_detail' file.title %}" class="text-decoration-none d-flex align-items-center gap-3 w-100">
+                         <div class="recent-item-image">
+                             {% if file.file_thumbnail %}
+                                 <img src="{{ file.file_thumbnail.url }}" alt="{{ file.title }}">
+                             {% else %}
+                                 <div class="d-flex align-items-center justify-content-center h-100">
+                                     <i class="fas fa-file-alt fa-2x text-muted"></i>
+                                 </div>
+                             {% endif %}
+                         </div>
+                         <div class="recent-item-content">
+                             <h4 class="recent-item-title">{{ file.title }}</h4>
+                             <p class="recent-item-date">{{ file.created_at|timesince }} trước bởi {{ file.author.username }}</p>
+                         </div>
+                     </a>
+                 </article>
+                 {% endfor %}
+             </div>
+            
+            <div class="col-lg-4">
+                <div class="sidebar-section">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Giới thiệu
+                        </h3>
+                        <p>Tại Việt Nam, giáo dục STEM là một yêu cầu cấp thiết trong đổi mới giáo dục, nhưng đang gặp nhiều rào cản, đặc biệt là tại các vùng nông thôn. Việt Nam có khoảng 1,6 triệu giáo viên phổ thông, trong đó trên 50% làm việc ở khu vực nông thôn, miền núi.</p>
+                    </div>
+                    
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-star me-2"></i>
+                            Người đóng góp nổi bật
+                        </h3>
+                        {% for user in top_users %}
+                        <div class="contributor-item">
+                            <div class="contributor-avatar">
+                                {{ user.username|slice:":1"|upper }}
+                            </div>
+                            <a href="#" class="contributor-name">{{ user.username }}</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-link me-2"></i>
+                            Liên kết
+                        </h3>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <a href="#" class="text-decoration-none">
+                                    <i class="fab fa-github me-2"></i>GitHub
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="text-decoration-none">
+                                    <i class="fab fa-facebook me-2"></i>Facebook
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="text-decoration-none">
+                                    <i class="fas fa-envelope me-2"></i>Liên hệ
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+    
